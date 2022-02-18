@@ -30,16 +30,16 @@ class Store(Storage):
     #     super().__init__(_capacity)
     #     self._capacity = _capacity
 
-    def __init__(self, _capacity=11, _limit=5):
+    def __init__(self, _capacity=11):
         self._store = {}
         self._capacity = _capacity
-        self._limit = _limit
 
     def add(self, title: str, quantity: int):
-        if quantity <= self._capacity - self._store.get(title, 0):
+        if quantity <= self.free_space:
             self._store[title] = self._store.get(title, 0) + quantity
+            print(f'Товар {title} добавлен в магазин.')
         else:
-            print(f'Не удовлетворяет требованиям capacity по продукту {title}.')
+            print(f'Не хватает места по продукту.')
 
     def remove(self, title: str, quantity: int):
         if self._store.get(title, 0) > 0:
@@ -51,7 +51,8 @@ class Store(Storage):
 
     @property
     def free_space(self):
-        return self._limit - self.get_unique_items_count
+        count = sum(self.get_items().values())
+        return self._capacity - count
 
     @property
     def get_unique_items_count(self):
@@ -64,14 +65,14 @@ class Store(Storage):
 
 class Shop(Store):
     def __init__(self, _limit=5, _capacity=20):
-        super().__init__(_capacity, _limit)
+        super().__init__(_capacity)
+        self.limit = _limit
 
     def add(self, title: str, quantity: int):
-        if self.free_space > 0:
-            print(f'Товар {title} добавлен в магазин.')
+        if self.limit > self.get_unique_items_count:
             super().add(title, quantity)
         else:
-            print('В магазин недостаточно места, попобуйте что-то другое.')
+            print('В магазин слишком много наименований!')
 
 
 class Request:
@@ -136,17 +137,17 @@ if __name__ == '__main__':
     st_.add(title='пельмени5', quantity=10)
     shop.add(title='печенья1', quantity=1)
     shop.add(title='печенья2', quantity=1)
-    shop.add(title='печенья3', quantity=1)
-    shop.add(title='печенья4', quantity=1)
-    req_ = Request('Доставить 3 пельмени из склад в магазин')
-    if st_.get_items().get(req_.product, 0) < req_.amount:
-        print('Не хватает на складе, попробуйте заказать меньше или другой продукт!')
-    else:
-        print('Нужное количество есть на складе!')
-        st_.remove(title=req_.product, quantity=req_.amount)
-        print(f'Курьер везет {req_.amount} {req_.product} со склад в магазин.')
-        shop.add(title=req_.product, quantity=req_.amount)
-    print('В складе хранится:')
-    print(f'{st_.get_items()}')
-    print('В магазине хранится:')
-    print(f'{shop.get_items()}')
+    shop.add(title='печенья3', quantity=11)
+    shop.add(title='печенья4', quantity=10)
+    # req_ = Request('Доставить 3 пельмени из склад в магазин')
+    # if st_.get_items().get(req_.product, 0) < req_.amount:
+    #     print('Не хватает на складе, попробуйте заказать меньше или другой продукт!')
+    # else:
+    #     print('Нужное количество есть на складе!')
+    #     st_.remove(title=req_.product, quantity=req_.amount)
+    #     print(f'Курьер везет {req_.amount} {req_.product} со склад в магазин.')
+    #     shop.add(title=req_.product, quantity=req_.amount)
+    # print('В складе хранится:')
+    # print(f'{st_.get_items()}')
+    # print('В магазине хранится:')
+    # print(f'{shop.get_items()}')
