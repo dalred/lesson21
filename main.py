@@ -2,6 +2,10 @@ from abc import ABC, abstractmethod
 
 
 class Storage(ABC):
+    """
+    абстрактный класс
+    """
+
     @abstractmethod
     def add(self, title, quantity: int):
         pass
@@ -26,9 +30,9 @@ class Storage(ABC):
 
 
 class Store(Storage):
-    # def __init__(self, _capacity):
-    #     super().__init__(_capacity)
-    #     self._capacity = _capacity
+    """
+    Класс склад, в нем храняться товары которые отправляются в магазин
+    """
 
     def __init__(self, _capacity=11):
         self._store = {}
@@ -48,7 +52,6 @@ class Store(Storage):
                 self._store.pop(title, 0)
             print(f'Курьер забрал {quantity} {title} со склада.')
 
-
     @property
     def free_space(self):
         count = sum(self.get_items().values())
@@ -62,17 +65,19 @@ class Store(Storage):
         return self._store
 
 
-
 class Shop(Store):
+    """
+        Класс магазин в нем хранятся, товары поступающие из склада
+    """
+
     def __init__(self, _limit=5, _capacity=20):
         super().__init__(_capacity)
         self._limit = _limit
 
-    #Добавляем геттер чтобы можно было просмотреть Limit из вне класса, но не изменить..
+    # Добавляем геттер чтобы можно было просмотреть Limit из вне класса, но не изменить..
     @property
     def limit(self):
         return self._limit
-
 
     def add(self, title: str, quantity: int):
         if self.limit > self.get_unique_items_count:
@@ -82,6 +87,8 @@ class Shop(Store):
 
 
 class Request:
+    """Класс отвещающий за разбор строки, то есть запроса из склада в магазин"""
+
     def __init__(self, str_):
         words = Request.get_str_(str_)
         self.from_ = words[4]
@@ -128,7 +135,6 @@ class Request:
 
     def __repr__(self):
         return f'Доставить {self._amount} {self._product}, из {self.from_} в {self.to}!'
-
 
 
 if __name__ == '__main__':
