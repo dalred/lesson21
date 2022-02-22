@@ -7,11 +7,11 @@ class Storage(ABC):
     """
 
     @abstractmethod
-    def add(self, title, quantity: int):
+    def add(self, title:str, quantity: int):
         pass
 
     @abstractmethod
-    def remove(self, title, quantity: int):
+    def remove(self, title:str, quantity: int):
         pass
 
     @property
@@ -53,15 +53,15 @@ class Store(Storage):
             print(f'Курьер забрал {quantity} {title} со склада.')
 
     @property
-    def free_space(self):
+    def free_space(self) -> int:
         count = sum(self.get_items().values())
         return self._capacity - count
 
     @property
-    def get_unique_items_count(self):
+    def get_unique_items_count(self) -> int:
         return len(self._store)
 
-    def get_items(self):
+    def get_items(self) -> dict:
         return self._store
 
 
@@ -76,7 +76,7 @@ class Shop(Store):
 
     # Добавляем геттер чтобы можно было просмотреть Limit из вне класса, но не изменить..
     @property
-    def limit(self):
+    def limit(self) -> int:
         return self._limit
 
     def add(self, title: str, quantity: int):
@@ -97,7 +97,7 @@ class Request:
         self.product = words[2]
 
     @staticmethod
-    def get_str_(str_):
+    def get_str_(str_) -> str:
         return str_.split(' ')
 
     # Добавляем геттер чтобы можно было просмотреть amount из вне класса, и сеттер чтобы изменить..
